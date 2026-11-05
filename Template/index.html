@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araç Yakıt & Maliyet Analizi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card-custom { background: #1e293b; border: 1px solid #334155; border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
+        .form-label { color: #94a3b8; font-weight: 500; font-size: 0.9rem; }
+        .form-control, .form-select { background-color: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 0.5rem; }
+        .form-control:focus, .form-select:focus { background-color: #0f172a; color: #fff; border-color: #3b82f6; box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); }
+        .btn-primary-custom { background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; transition: all 0.3s ease; }
+        .btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); }
+        .metric-card { background: #0f172a; border-radius: 0.75rem; padding: 1.25rem; border-left: 4px solid #3b82f6; }
+        .metric-value { font-size: 1.8rem; font-weight: 700; color: #38bdf8; }
+        .highlight-card { background: linear-gradient(135deg, #1e3a8a, #1e293b); border: 1px solid #3b82f6; }
+    </style>
+</head>
+<body class="py-5">
+
+<div class="container">
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10 text-center">
+            <h1 class="fw-bold text-white mb-2"><i class="fa-solid fa-gauge-high text-primary me-2"></i> Araç Yakıt & Maliyet Analiz Portalı</h1>
+            <p class="text-secondary">Makine öğrenmesi altyapısı ile aracınızın tüketimini ve km bazlı maliyetini hesaplayın.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <!-- Giriş Formu -->
+        <div class="col-lg-5">
+            <div class="card card-custom p-4 h-100">
+                <h5 class="card-title text-white mb-4"><i class="fa-solid fa-sliders text-primary me-2"></i> Araç Parametreleri</h5>
+                <form id="calcForm">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fa-solid fa-car-side me-1"></i> Motor Hacmi (Litre)</label>
+                        <input type="number" step="0.1" class="form-control" id="engine_size" value="2.0" min="0.8" max="8.4" required>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label"><i class="fa-solid fa-gears me-1"></i> Vites Sayısı</label>
+                            <input type="number" class="form-control" id="gears" value="6" min="1" max="10" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label"><i class="fa-solid fa-layer-group me-1"></i> Araç Sınıfı</label>
+                            <select class="form-select" id="vehicle_class">
+                                <option value="1">Binek / Sedan</option>
+                                <option value="2" selected>Kompakt / Hatchback</option>
+                                <option value="3">SUV / Crossover</option>
+                                <option value="4">Pikap / Ticari</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label"><i class="fa-solid fa-gas-pump me-1"></i> Yakıt Türü</label>
+                            <select class="form-select" id="fuel_type">
+                                <option value="X" selected>Benzin (Normal)</option>
+                                <option value="Z">Benzin (Premium)</option>
+                                <option value="D">Dizel</option>
+                                <option value="E">Ethanol (E85)</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label"><i class="fa-solid fa-code-branch me-1"></i> Şanzıman</label>
+                            <select class="form-select" id="trans_type">
+                                <option value="AS" selected>Otomatik (AS)</option>
+                                <option value="AV">CVT (AV)</option>
+                                <option value="AM">Yarı Otomatik (AM)</option>
+                                <option value="M">Manuel (M)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="border-secondary my-4">
+
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="form-label"><i class="fa-solid fa-turkish-lira-sign me-1"></i> Litre Fiyatı (TL)</label>
+                            <input type="number" step="0.1" class="form-control" id="fuel_price" value="42.50" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label"><i class="fa-solid fa-route me-1"></i> Mesafe (km)</label>
+                            <input type="number" class="form-control" id="distance" value="100" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100">
+                        <i class="fa-solid fa-calculator me-2"></i> Hesapla & Analiz Et
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sonuç Paneli -->
+        <div class="col-lg-7">
+            <div class="card card-custom p-4 h-100">
+                <h5 class="card-title text-white mb-4"><i class="fa-solid fa-chart-pie text-primary me-2"></i> Analiz Sonuçları</h5>
+                
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <div class="text-secondary small mb-1">100 km Ortalama Tüketim</div>
+                            <div class="metric-value" id="res_100km">9.60 <span class="fs-6 text-white-50">L/100km</span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="metric-card" style="border-left-color: #10b981;">
+                            <div class="text-secondary small mb-1">1 km'deki Yakıt Miktarı</div>
+                            <div class="metric-value text-success" id="res_per_km">0.0960 <span class="fs-6 text-white-50">L/km</span></div>
+                            <div class="small text-muted" id="res_ml_km">(96.0 ml/km)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="metric-card" style="border-left-color: #f59e0b;">
+                            <div class="text-secondary small mb-1">1 Km Yol Masrafı</div>
+                            <div class="metric-value text-warning" id="res_cost_km">4.08 <span class="fs-6 text-white-50">TL / km</span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="metric-card highlight-card">
+                            <div class="text-secondary small mb-1">Planlanan Mesafe Masrafı</div>
+                            <div class="metric-value text-white" id="res_total_cost">408.00 <span class="fs-6 text-white-50">TL</span></div>
+                            <div class="small text-info" id="res_total_fuel">Toplam Tüketim: 9.60 Litre</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 border border-secondary rounded-3 bg-slate-900">
+                    <h6 class="text-white mb-2"><i class="fa-solid fa-circle-info text-info me-2"></i> Bilgilendirme</h6>
+                    <p class="text-secondary small mb-0">
+                        Bu tahminler Random Forest regresyon algoritması kullanılarak hesaplanmaktadır. Sürüş ortamı (şehir içi/şehir dışı), hava şartları ve araç yük durumu tüketimde %10-15 değişiklik gösterebilir.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('calcForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const payload = {
+        engine_size: document.getElementById('engine_size').value,
+        gears: document.getElementById('gears').value,
+        vehicle_class: document.getElementById('vehicle_class').value,
+        fuel_type: document.getElementById('fuel_type').value,
+        trans_type: document.getElementById('trans_type').value,
+        fuel_price: document.getElementById('fuel_price').value,
+        distance: document.getElementById('distance').value
+    };
+
+    try {
+        const response = await fetch('/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            document.getElementById('res_100km').innerHTML = `${data.pred_100km} <span class="fs-6 text-white-50">L/100km</span>`;
+            document.getElementById('res_per_km').innerHTML = `${data.lt_per_km} <span class="fs-6 text-white-50">L/km</span>`;
+            document.getElementById('res_ml_km').innerText = `(${data.ml_per_km} ml/km)`;
+            document.getElementById('res_cost_km').innerHTML = `${data.cost_per_km} <span class="fs-6 text-white-50">TL / km</span>`;
+            document.getElementById('res_total_cost').innerHTML = `${data.total_cost} <span class="fs-6 text-white-50">TL</span>`;
+            document.getElementById('res_total_fuel').innerText = `Toplam Tüketim: ${data.total_fuel_lt} Litre (${data.distance} km için)`;
+        } else {
+            alert('Hesaplama sırasında bir hata oluştu: ' + data.error);
+        }
+    } catch (err) {
+        alert('Sunucu ile iletişim kurulamadı.');
+    }
+});
+</script>
+
+</body>
+</html>
